@@ -11,7 +11,7 @@ import (
 const (
 	outOfRange             = "Введенное число не принадлежит отрезку от 1 до 10"                                                //ПРОВЕРЕНО
 	nonIntInput            = "Введенное число(числа) не является(являются) целым(и)"                                            //ПРОВЕРЕНО
-	romanianNegativeOrZero = "Римская система счисления не имеет числа 0 и отрицательных чисел"                                 //-
+	romanianNegativeOrZero = "Римская система счисления не имеет числа 0 и отрицательных чисел"                                 //ПРОВЕРЕНО
 	numberSystemMixed      = "Используются разные системы счисления"                                                            //ПРОВЕРЕНО
 	tooManyOrWrongActions  = "Формат математической операции не удовлетворяет заданию или не является математической операцией" //ПРОВЕРЕНО
 )
@@ -65,6 +65,8 @@ func checkInputCalc(x string, y string, z string) {
 			panic(outOfRange)
 		} else if z == "-" && romanian[x] <= romanian[y] {
 			panic(romanianNegativeOrZero)
+		} else if z == "/" && romanian[x] == 1 {
+			panic(romanianNegativeOrZero)
 		} else {
 			fmt.Println(romanianCalc(x, y, z))
 			os.Exit(0)
@@ -114,8 +116,15 @@ func romanianCalc(x string, y string, z string) string {
 	}
 }
 
-func arabicCalc(x int, y int, z string) int {
-	return operators[z](x, y)
+func arabicCalc(x int, y int, z string) string {
+	if z == "/" {
+		xFloat := float64(x)
+		yFloat := float64(y)
+		if (xFloat / yFloat) != float64(x/y) {
+			return fmt.Sprintf("%f", (xFloat / yFloat))
+		}
+	}
+	return strconv.Itoa(operators[z](x, y))
 }
 
 func main() {
