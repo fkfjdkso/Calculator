@@ -23,6 +23,23 @@ var operators = map[string]func(x, y int) int{
 	"/": func(x, y int) int { return x / y },
 }
 
+var intToRomanian = map[int]string{
+	1:   "I",
+	2:   "II",
+	3:   "III",
+	4:   "IV",
+	5:   "V",
+	6:   "VI",
+	7:   "VII",
+	8:   "VIII",
+	9:   "IX",
+	10:  "X",
+	40:  "XL",
+	50:  "L",
+	90:  "XC",
+	100: "C",
+}
+
 var romanian = map[string]int{
 	"I":    1,
 	"II":   2,
@@ -40,17 +57,22 @@ var romanian = map[string]int{
 	"C":    100,
 }
 
-func checkInput(x string, y string, z string) {
-	fmt.Println(z)
+func checkInputCalc(x string, y string, z string) {
 	digit1, errDigit1 := strconv.Atoi(x)
 	digit2, errDigit2 := strconv.Atoi(y)
 	if errDigit1 != nil && errDigit2 != nil {
 		if romanian[x] == 0 || romanian[y] == 0 {
 			panic(outOfRange)
+		} else {
+			fmt.Println(romanianCalc(x, y, z))
+			os.Exit(0)
 		}
 	} else if errDigit1 == nil && errDigit2 == nil {
-		if (digit1 >= 10 || digit1 < 1) || (digit2 >= 10 || digit2 < 1) {
+		if (digit1 > 10 || digit1 < 1) || (digit2 > 10 || digit2 < 1) {
 			panic(outOfRange)
+		} else {
+			fmt.Println(arabicCalc(digit1, digit2, z))
+			os.Exit(0)
 		}
 	} else if (errDigit1 == nil && romanian[y] != 0) || (errDigit2 == nil && romanian[x] != 0) {
 		panic(numberSystemMixed)
@@ -61,6 +83,37 @@ func checkInput(x string, y string, z string) {
 			panic(nonIntInput)
 		}
 	}
+}
+
+func romanianCalc(x string, y string, z string) string {
+	digit1 := romanian[x]
+	digit2 := romanian[y]
+	intresult := operators[z](digit1, digit2)
+	result := strconv.Itoa(intresult)
+	switch len(result) {
+	case 2:
+		splitResult := strings.Split(result, "")
+		firstPart, _ := strconv.Atoi(splitResult[0])
+		secondPart, _ := strconv.Atoi(splitResult[1])
+		if intToRomanian[firstPart*10] != "" {
+			firstPartResult := intToRomanian[firstPart*10]
+			return firstPartResult + intToRomanian[secondPart]
+		} else {
+			if firstPart >= 5 {
+				firstPartResult := intToRomanian[50] + strings.Repeat("X", (firstPart-5))
+				return firstPartResult + intToRomanian[secondPart]
+			} else {
+				firstPartResult := strings.Repeat("X", firstPart)
+				return firstPartResult + intToRomanian[secondPart]
+			}
+		}
+	default:
+		return intToRomanian[intresult]
+	}
+}
+
+func arabicCalc(x int, y int, z string) int {
+	return operators[z](x, y)
 }
 
 func main() {
@@ -77,7 +130,7 @@ func main() {
 			} else if elems[1] == "-" && romanian[elems[0]] <= romanian[elems[2]] {
 				panic(romanianNegativeOrZero)
 			} else {
-				checkInput(elems[0], elems[2], elems[1])
+				checkInputCalc(elems[0], elems[2], elems[1])
 			}
 		default:
 			panic(tooManyOrWrongActions)
