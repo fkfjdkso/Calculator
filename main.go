@@ -11,7 +11,7 @@ import (
 const (
 	outOfRange             = "Введенное число не принадлежит отрезку от 1 до 10"                                                //ПРОВЕРЕНО
 	nonIntInput            = "Введенное число(числа) не является(являются) целым(и)"                                            //ПРОВЕРЕНО
-	romanianNegativeOrZero = "Римская система счисления не имеет числа 0 и отрицательных чисел"                                 //ПРОВЕРЕНО
+	romanianNegativeOrZero = "Римская система счисления не имеет числа 0 и отрицательных чисел"                                 //-
 	numberSystemMixed      = "Используются разные системы счисления"                                                            //ПРОВЕРЕНО
 	tooManyOrWrongActions  = "Формат математической операции не удовлетворяет заданию или не является математической операцией" //ПРОВЕРЕНО
 )
@@ -63,6 +63,8 @@ func checkInputCalc(x string, y string, z string) {
 	if errDigit1 != nil && errDigit2 != nil {
 		if romanian[x] == 0 || romanian[y] == 0 {
 			panic(outOfRange)
+		} else if z == "-" && romanian[x] <= romanian[y] {
+			panic(romanianNegativeOrZero)
 		} else {
 			fmt.Println(romanianCalc(x, y, z))
 			os.Exit(0)
@@ -127,8 +129,6 @@ func main() {
 		case 3:
 			if elems[1] != "+" && elems[1] != "-" && elems[1] != "/" && elems[1] != "*" {
 				panic(tooManyOrWrongActions)
-			} else if elems[1] == "-" && romanian[elems[0]] <= romanian[elems[2]] {
-				panic(romanianNegativeOrZero)
 			} else {
 				checkInputCalc(elems[0], elems[2], elems[1])
 			}
