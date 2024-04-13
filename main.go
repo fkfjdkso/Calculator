@@ -117,13 +117,6 @@ func romanianCalc(x string, y string, z string) string {
 }
 
 func arabicCalc(x int, y int, z string) string {
-	if z == "/" {
-		xFloat := float64(x)
-		yFloat := float64(y)
-		if (xFloat / yFloat) != float64(x/y) {
-			return fmt.Sprintf("%f", (xFloat / yFloat))
-		}
-	}
 	return strconv.Itoa(operators[z](x, y))
 }
 
