@@ -1,3 +1,3 @@
 # Calculator
 
-#Тестовое задание в Kata Academy
+Тестовое задание в Kata Academy
